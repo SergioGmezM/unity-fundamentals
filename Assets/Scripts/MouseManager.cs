@@ -25,11 +25,17 @@ public class MouseManager : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50, clickableLayer.value))
         {
             bool door = false;
+            bool item = false;
 
             if (hit.collider.gameObject.tag == "Doorway")
             {
                 Cursor.SetCursor(doorway, new Vector2(16, 16), CursorMode.Auto);
                 door = true;
+            }
+            else if (hit.collider.gameObject.tag == "Item")
+            {
+                // Cursor.SetCursor(combat, new Vector2(16, 16), CursorMode.Auto);
+                item = true;
             }
             else
             {
@@ -39,7 +45,20 @@ public class MouseManager : MonoBehaviour
             // Moving the player
             if (Input.GetMouseButtonDown(1))
             {
-                onClickEnvironment.Invoke(hit.point);
+                if (door)
+                {
+                    Transform doorwayTransform = hit.collider.gameObject.transform;
+                    onClickEnvironment.Invoke(doorwayTransform.position);
+                }
+                else if (item)
+                {
+                    Transform itemTransform = hit.collider.gameObject.transform;
+                    onClickEnvironment.Invoke(itemTransform.position);
+                }
+                else
+                {
+                    onClickEnvironment.Invoke(hit.point);
+                }
             }
         }
         else
