@@ -11,19 +11,22 @@ public class NPCController : MonoBehaviour
     public Transform[] waypoints;
 
     private int index;
-    private float speed, agentSpeed;
+    private float agentSpeed;
     private Transform playerTransform;
 
-    // private Animator anim;
+    private Animator anim;
     private NavMeshAgent agent;
+
+    private int speedHash;
 
     private void Awake()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        // anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         if (agent != null) agentSpeed = agent.speed;
         index = Random.Range(0, waypoints.Length);
+        speedHash = Animator.StringToHash("Speed");
     }
 
     private void Start()
@@ -34,6 +37,11 @@ public class NPCController : MonoBehaviour
         {
             InvokeRepeating("Patrol", 0, patrolTime);
         }
+    }
+
+    private void Update()
+    {
+        anim.SetFloat(speedHash, agent.velocity.magnitude);
     }
 
     private void Patrol()
